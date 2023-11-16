@@ -1,29 +1,36 @@
-import { Button, Input, Space } from 'antd';
 import 'antd/lib/button/style';
+import { Button, Input, Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { add, update } from '../store/serviceList';
-import { changeServiceField, clearServiceFields } from '../store/serviceAdd';
+// import './ServiceAdd.css';
+import {
+  changeInputValue,
+  addService,
+  resetForm,
+  editService
+} from '../actions/actionsCreater'
 
-function ServiceAdd() {
-  const item = useSelector((state) => state.serviceAdd)
-  const dispatch = useDispatch()
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    dispatch(changeServiceField( { name, value }))
+export default function Form() {
+  const dispatch = useDispatch();
+  const { name, price, clickedId } = useSelector(state => state.item);
+
+  const handleChange = (evt) => {
+    const { name, value } = evt.target;
+    dispatch(changeInputValue(name, value));
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (item.id) {
-      dispatch(update({...item}))
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    if (!clickedId) {
+      dispatch(addService(name, price));
+      dispatch(resetForm());
     } else {
-      dispatch(add({ name: item.name, price: item.price }))
+      dispatch(editService(name, price, clickedId));
+      dispatch(resetForm());
     }
-    dispatch(clearServiceFields())
   }
 
-  const handleCancel = (e) => {
-    dispatch(clearServiceFields())
+  const handleCancel = (evt) => {
+    dispatch(resetForm())
   }
 
   return(
@@ -32,20 +39,20 @@ function ServiceAdd() {
         <Input
           name="name"
           onChange={handleChange}
-          value={item.name}
+          value={name}
           style={{ width: 205}}
+          placeholder='Введите наименование услуги'
         />
         <Input
           name="price"
           onChange={handleChange}
-          value={item.price}   
+          value={price}   
           style={{ width: 205}}
+          placeholder='Введите стоимость'
         />              
         <Button onClick={handleSubmit} type="primary">Save</Button>
-        {item.id ? <Button onClick={handleCancel} type="primary">Cancel</Button> : null}
+        {clickedId && <button onClick={handleCancel} className="form__btn">Cancel</button>}
       </Space>
     </form>
   )
 }
-
-export default ServiceAdd

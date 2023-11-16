@@ -1,15 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
-import serviceList from './serviceList'
-import serviceAdd from './serviceAdd'
-import serviceFilter from './serviceFilter'
+import { createStore, combineReducers } from 'redux';
+import fieldChangeReducer from './fieldChangeReducer';
+import serviceListReducer from './serviceListReducer';
+import filterReducer from './filterReducer';
+import {composeWithDevTools} from 'redux-devtools-extension'
 
-
-const store = configureStore({
-  reducer: {
-    serviceList,
-    serviceAdd,
-    serviceFilter
-  }
+const rootReducer = combineReducers({
+  item: fieldChangeReducer,
+  list: serviceListReducer,
+  filter: filterReducer
 })
 
-export default store
+export const store = createStore(rootReducer, composeWithDevTools());

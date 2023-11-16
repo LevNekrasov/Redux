@@ -1,32 +1,31 @@
-import { Button } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { remove } from '../store/serviceList';
-import { edit } from '../store/serviceAdd';
-import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import './List.scss';
+import { useSelector } from 'react-redux';
+import ListItem from './ListItem';
 
-export default function ServiceList() {
-  const items = useSelector((state) => state.serviceList)
-  const dispatch = useDispatch()
+export default function List() {
+  const { list } = useSelector(state => state);
+  const { filter } = useSelector(state => state);
 
-  const handleRemove = (id) => {
-    dispatch(remove(id))
+  const getList = (value, array) => {
+    if (value) {
+      const filteredArr = array.filter((el) => el.name.toLowerCase().includes(value.toLowerCase()));
+      return filteredArr;
+    }
+    return array;
   }
 
-  const handleEdit = (id, name, price) => {
-    dispatch(edit({ id, name, price }))
-  }
-
-  return(
-    <ul style={{ listStyle: "none" }}>
-      {items.map((o) => (
-        <li key={o.id} style={{ marginTop: 10}}>
-          <div style={{ display: "inline-block", width: 200 }}> {o.name} </div>
-          <div style={{ display: "inline-block", width: 200 }}> {o.price} </div>
-          <Button onClick={() => handleRemove(o.id)}><FontAwesomeIcon icon={faTrashAlt}/></Button>
-          <Button onClick={() => handleEdit(o.id, o.name, o.price)}><FontAwesomeIcon icon={faPen}/></Button>          
-        </li>
-      ))}
-    </ul>
-  );
+  return (
+    <table className="app__table table">
+      <thead className="table__thead">
+        <tr>
+          <th className="thead__item">Наименование услуги</th>
+          <th className="thead__item">Стоимость</th>
+          <th className="thead__item">Действия</th>
+        </tr>
+      </thead>
+      <tbody className="table__tbody">
+        {list && getList(filter, list).map((el) => <ListItem key={el.id} element={el} />)}
+      </tbody>
+    </table>
+  )
 }

@@ -1,29 +1,27 @@
-import { Button, Input, Space } from 'antd';
 import 'antd/lib/button/style';
-import { useDispatch, useSelector } from 'react-redux';
-import { filter } from '../store/serviceFilter';
+import { Input, Space } from 'antd';
+import { useDispatch } from 'react-redux';
+import { filterList } from '../actions/actionsCreater';
+import './ServiceFilter.css'
 
-function ServiceFilter() {
-  
-  const filterValue = useSelector((state) => state.serviceFilter)
-  const dispatch = useDispatch()
+export default function AddForm() {
+  const dispatch = useDispatch();
+
   const handleChange = (e) => {
-    const { value } = e.target
-    dispatch( filter(value))
+    const { value } = e.target;
+    dispatch(filterList(value));
   }
-  
+
   return(
     <>
       <Space style={{ paddingBottom: 20, marginLeft: 40 }}>
         <Input
         name="filter"
         onChange={handleChange}
-        value={filterValue}   
+        placeholder='Фильтр по наименованию услуги'
         style={{ width: 490}}
         /> 
       </Space>
     </>
   )
 }
-
-export default ServiceFilter
